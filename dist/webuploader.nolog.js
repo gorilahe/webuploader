@@ -382,7 +382,12 @@
              * @method noop
              */
             noop: noop,
-    
+            
+             supportDirectory: (function() {
+                var _tmpInput = document.createElement('input'); 
+                if ('webkitdirectory' in _tmpInput)  return true; 
+                return false;
+            })(),
             /**
              * 返回一个新的方法，此方法将已指定的`context`来执行。
              * @grammar Base.bindFn( fn, context ) => Function
@@ -1677,6 +1682,7 @@
             }
     
             this.ext = ext;
+            this.webkitRelativePath = file.webkitRelativePath || '';
             this.lastModifiedDate = file.lastModifiedDate || 
                     file.lastModified && new Date(file.lastModified).toLocaleString() ||
                     (new Date()).toLocaleString();
@@ -1725,6 +1731,7 @@
             multiple: true,
             accept: null,
             name: 'file',
+            webkitdirectory:false,
             style: 'webuploader-pick'   //pick element class attribute, default is "webuploader-pick"
         };
     
@@ -2411,6 +2418,7 @@
              * @type {string}
              */
             this.name = source.name || 'Untitled';
+            this.webkitRelativePath = source.webkitRelativePath || '';
     
             /**
              * 文件体积（字节）
@@ -4151,7 +4159,8 @@
                     name: file.name,
                     type: file.type,
                     lastModifiedDate: file.lastModifiedDate,
-                    size: file.size
+                    size: file.size,
+                    webkitRelativePath: file.webkitRelativePath || ''
                 });
     
                 block.chunks > 1 && $.extend( data, {
@@ -4973,6 +4982,7 @@
                 input.attr( 'type', 'file' );
                 input.attr( 'capture', 'camera');
                 input.attr( 'name', opts.name );
+                input.prop( 'webkitdirectory', opts.webkitdirectory );
                 input.addClass('webuploader-element-invisible');
     
                 label.on( 'click', function(e) {
